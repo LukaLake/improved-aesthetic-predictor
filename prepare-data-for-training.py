@@ -53,7 +53,7 @@ for idx, row in df.iterrows():
     with torch.no_grad():
        image_features = model.encode_image(image)
 
-    im_emb_arr = image_features.cpu().detach().numpy() 
+    im_emb_arr = image_features.cpu().detach().numpy() # 从GPU中取出数据，转换为numpy格式
     x.append(normalized ( im_emb_arr) )      # all CLIP embeddings are getting normalized. This also has to be done when inputting an embedding later for inference
     y_ = np.zeros((1, 1))
     y_[0][0] = average_rating
