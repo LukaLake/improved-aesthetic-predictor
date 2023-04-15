@@ -3,7 +3,7 @@
 # It assumes that all images are stored as files that PIL can read.
 # It also assumes that the paths to the images files and the average ratings are in a .parquet files that can be read into a dataframe ( df ).
 
-from datasets import load_dataset
+# from datasets import load_dataset
 import pandas as pd
 import statistics
 from torch.utils.data import Dataset, DataLoader
@@ -23,7 +23,7 @@ def normalized(a, axis=-1, order=2):
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model, preprocess = clip.load("ViT-L/14", device=device)
+model, preprocess = clip.load("ViT-L/14", device=device) # use openai's open-source model
 
  
 f = "trainingdata.parquet"
@@ -48,7 +48,7 @@ for idx, row in df.iterrows():
     try:
        image = preprocess(Image.open(img)).unsqueeze(0).to(device)
     except:
-   	   continue
+       continue
 
     with torch.no_grad():
        image_features = model.encode_image(image)
