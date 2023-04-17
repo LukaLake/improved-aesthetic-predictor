@@ -30,11 +30,7 @@ from PIL import Image, ImageFile
 
 #####  This script will predict the aesthetic score for this image file:
 
-img_path = "test.jpg"
-
-
-
-
+img_path = "images/954013.jpg"
 
 # if you changed the MLP architecture during training, change it also here:
 class MLP(pl.LightningModule):
