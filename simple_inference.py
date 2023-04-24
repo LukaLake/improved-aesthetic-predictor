@@ -25,20 +25,7 @@ import clip
 from PIL import Image, ImageFile
 
 
-#####  This script will predict the aesthetic score for this image file:
 
-img_name = "img_0000_730.jpg"
-path_to_data = "D:/BaiduNetdiskDownload/group1/"
-
-path_to_images = path_to_data + "/group1/"
-image_filenames = []
-for filename in os.listdir(path_to_images):
-    if (
-        filename.endswith(".jpg")
-        or filename.endswith(".png")
-        or filename.endswith(".jpeg")
-    ):
-        image_filenames.append(filename)
 
 
 # if you changed the MLP architecture during training, change it also here:
@@ -93,7 +80,7 @@ def normalized(a, axis=-1, order=2):
     return a / np.expand_dims(l2, axis)
 
 
-def pred():
+def pred(_path_to_data, _path_to_images, _image_filenames):
     model = MLP(768)  # CLIP embedding dim is 768 for CLIP ViT L 14
 
     s = torch.load(
@@ -110,8 +97,8 @@ def pred():
 
     image_score = []
     image_good = []
-    for image in enumerate(tqdm.tqdm(image_filenames)):
-        img_path = path_to_images + "/" + image[1]
+    for image in enumerate(tqdm.tqdm(_image_filenames)):
+        img_path = _path_to_images + "/" + image[1]
         pil_image = Image.open(img_path)
 
         processed_image = preprocess(pil_image).unsqueeze(0).to(device)
@@ -131,20 +118,20 @@ def pred():
         image_score.append(dict(image_name=image[1], score=score_np))
 
     for image in image_score:
-        if image.get("score") > 5:
+        if image.get("score") > 5.01:
             image_good.append(image)
 
     print(len(image_score))
     print(len(image_good))
 
-    path_to_good=path_to_data+'/good/'
+    path_to_good=_path_to_data+'/good/'
     for image in enumerate(tqdm.tqdm(image_good)):
         image_name=image[1].get('image_name')
-        image_path=path_to_images+image_name
+        image_path=_path_to_images+image_name
         shutil.copy(image_path,path_to_good+image_name)
 
 
-def pred_single(img_name):
+def pred_single(_path_to_data, _path_to_images, _img_name):
     model = MLP(768)  # CLIP embedding dim is 768 for CLIP ViT L 14
 
     s = torch.load(
@@ -159,7 +146,7 @@ def pred_single(img_name):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model2, preprocess = clip.load("ViT-L/14", device=device)  # RN50x64
 
-    img_path = path_to_images + "/" + img_name
+    img_path = _path_to_images + "/" + _img_name
     pil_image = Image.open(img_path)
 
     processed_image = preprocess(pil_image).unsqueeze(0).to(device)
@@ -177,7 +164,27 @@ def pred_single(img_name):
     # print("Aesthetic score predicted by the model:")
     print(score_np)
 
-    path_to_good=path_to_data+'/good/'
-    image_name=img_name
-    image_path=path_to_images+image_name
+    path_to_good=_path_to_data+'/good/'
+    image_name=_img_name
+    image_path=_path_to_images+image_name
     shutil.copy(image_path,path_to_good+image_name)   
+
+
+#####  This script will predict the aesthetic score for this image file:
+img_name = "img_0000_466.jpg"
+path_to_data = "D:/BaiduNetdiskDownload/group1/"
+
+path_to_images = path_to_data + "/group1/"
+image_filenames = []
+for filename in os.listdir(path_to_images):
+    if (
+        filename.endswith(".jpg")
+        or filename.endswith(".png")
+        or filename.endswith(".jpeg")
+    ):
+        image_filenames.append(filename)
+
+
+if __name__ =="__main__":
+    pred(path_to_data, path_to_images,image_filenames)
+    
