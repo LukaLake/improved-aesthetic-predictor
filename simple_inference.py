@@ -113,12 +113,13 @@ def pred(_path_to_data, _path_to_images, _image_filenames):
         )
 
         score_np = prediction.data.cpu().numpy()
+        score_np=np.squeeze(score_np)
         # print("Aesthetic score predicted by the model:")
         # print(prediction)
         image_score.append(dict(image_name=image[1], score=score_np))
 
     for image in image_score:
-        if image.get("score") > 5.01:
+        if image.get("score") > 5.20:
             image_good.append(image)
 
     print(len(image_score))
@@ -129,6 +130,14 @@ def pred(_path_to_data, _path_to_images, _image_filenames):
         image_name=image[1].get('image_name')
         image_path=_path_to_images+image_name
         shutil.copy(image_path,path_to_good+image_name)
+
+    # 绘制直方图
+    values = [d['score'] for d in image_score]
+    plt.hist(values, bins=10)
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of Random Data')
+    plt.show()
 
 
 def pred_single(_path_to_data, _path_to_images, _img_name):
@@ -161,6 +170,7 @@ def pred_single(_path_to_data, _path_to_images, _img_name):
     )
 
     score_np = prediction.data.cpu().numpy()
+    score_np=np.squeeze(score_np)
     # print("Aesthetic score predicted by the model:")
     print(score_np)
 
@@ -171,7 +181,7 @@ def pred_single(_path_to_data, _path_to_images, _img_name):
 
 
 #####  This script will predict the aesthetic score for this image file:
-img_name = "img_0000_466.jpg"
+img_name = "img_0000_145.jpg"
 path_to_data = "D:/BaiduNetdiskDownload/group1/"
 
 path_to_images = path_to_data + "/group1/"
@@ -187,4 +197,20 @@ for filename in os.listdir(path_to_images):
 
 if __name__ =="__main__":
     pred(path_to_data, path_to_images,image_filenames)
+    # pred_single(path_to_data, path_to_images,img_name)
     
+import matplotlib.pyplot as plt
+
+# 定义一个成员为dict的数组
+data = [{'value': 1}, {'value': 2}, {'value': 2}, {'value': 3}, {'value': 3},
+        {'value': 3}, {'value': 4}, {'value': 4}, {'value': 5}, {'value': 5}]
+
+# 提取字典中'value'对应的值
+values = [d['value'] for d in data]
+
+# 绘制直方图
+plt.hist(values, bins=5)
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.title('Histogram of Data')
+plt.show()
