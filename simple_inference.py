@@ -240,11 +240,12 @@ for filename in os.listdir(path_to_images):
 
 
 model, model2, proprecss=pre_pred()
-print('please input\n')
+
 # 实现持续运行
 while True:
+    print('please input\n')
     # 接受输入的参数
-    input_param = input("please input params：")
+    input_param = input()
     print("params are: ", input_param)
     # 对参数进行处理
     if input_param == "exit":
