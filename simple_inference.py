@@ -140,6 +140,48 @@ def pred(_path_to_data, _path_to_images, _image_filenames):
     plt.show()
 
 
+# 单独载入预测参数
+def pre_pred():
+    model = MLP(768)  # CLIP embedding dim is 768 for CLIP ViT L 14
+
+    s = torch.load(
+        "sac+logos+ava1-l14-linearMSE.pth"
+    )  # load the model you trained previously or the model available in this repo
+
+    model.load_state_dict(s)
+    model.to("cuda")
+    model.eval()
+
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model2, preprocess = clip.load("ViT-L/14", device=device)  # RN50x64
+    return model, model2, preprocess
+
+
+# 使用输入的模型进行预测
+def to_pred(model, model2, preprocess, _path_to_data, _path_to_images, _img_name):
+    img_path = _path_to_images + "/" + _img_name
+    pil_image = Image.open(img_path)
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    processed_image = preprocess(pil_image).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        image_features = model2.encode_image(processed_image)
+
+    im_emb_arr = normalized(image_features.cpu().detach().numpy())
+
+    prediction = model(
+        torch.from_numpy(im_emb_arr).to(device).type(torch.cuda.FloatTensor)
+    )
+
+    score_np = prediction.data.cpu().numpy()
+    score_np=np.squeeze(score_np)
+    # print("Aesthetic score predicted by the model:")
+    # print(prediction)
+    return score_np
+
+
 def pred_single(_path_to_data, _path_to_images, _img_name):
     model = MLP(768)  # CLIP embedding dim is 768 for CLIP ViT L 14
 
@@ -196,21 +238,19 @@ for filename in os.listdir(path_to_images):
 
 
 if __name__ =="__main__":
-    pred(path_to_data, path_to_images,image_filenames)
-    # pred_single(path_to_data, path_to_images,img_name)
+    model, model2, proprecss=pre_pred()
+    # 实现持续运行
+    while True:
+        # 接受输入的参数
+        input_param = input("请输入参数：")
+        print("参数为：", input_param)
+        # 对参数进行处理
+        if input_param == "exit":
+            break
+        score=to_pred(model, model2, proprecss, path_to_data, path_to_images,input_param)
+
+        print(score)
+        # 循环继续，等待下一个输入参数
+        # pred(path_to_data, path_to_images,image_filenames)
+        
     
-import matplotlib.pyplot as plt
-
-# 定义一个成员为dict的数组
-data = [{'value': 1}, {'value': 2}, {'value': 2}, {'value': 3}, {'value': 3},
-        {'value': 3}, {'value': 4}, {'value': 4}, {'value': 5}, {'value': 5}]
-
-# 提取字典中'value'对应的值
-values = [d['value'] for d in data]
-
-# 绘制直方图
-plt.hist(values, bins=5)
-plt.xlabel('Value')
-plt.ylabel('Frequency')
-plt.title('Histogram of Data')
-plt.show()
