@@ -142,10 +142,11 @@ def pred(_path_to_data, _path_to_images, _image_filenames):
 
 # 单独载入预测参数
 def pre_pred():
+    print('正在预处理')
     model = MLP(768)  # CLIP embedding dim is 768 for CLIP ViT L 14
 
     s = torch.load(
-        "sac+logos+ava1-l14-linearMSE.pth"
+        "C:/Users/123/Documents/GitHub/improved-aesthetic-predictor/sac+logos+ava1-l14-linearMSE.pth"
     )  # load the model you trained previously or the model available in this repo
 
     model.load_state_dict(s)
@@ -186,7 +187,7 @@ def pred_single(_path_to_data, _path_to_images, _img_name):
     model = MLP(768)  # CLIP embedding dim is 768 for CLIP ViT L 14
 
     s = torch.load(
-        "sac+logos+ava1-l14-linearMSE.pth"
+        "./sac+logos+ava1-l14-linearMSE.pth"
     )  # load the model you trained previously or the model available in this repo
 
     model.load_state_dict(s)
@@ -237,20 +238,21 @@ for filename in os.listdir(path_to_images):
         image_filenames.append(filename)
 
 
-if __name__ =="__main__":
-    model, model2, proprecss=pre_pred()
-    # 实现持续运行
-    while True:
-        # 接受输入的参数
-        input_param = input("请输入参数：")
-        print("参数为：", input_param)
-        # 对参数进行处理
-        if input_param == "exit":
-            break
-        score=to_pred(model, model2, proprecss, path_to_data, path_to_images,input_param)
 
-        print(score)
-        # 循环继续，等待下一个输入参数
-        # pred(path_to_data, path_to_images,image_filenames)
+model, model2, proprecss=pre_pred()
+print('please input\n')
+# 实现持续运行
+while True:
+    # 接受输入的参数
+    input_param = input("please input params：")
+    print("params are: ", input_param)
+    # 对参数进行处理
+    if input_param == "exit":
+        break
+    score=to_pred(model, model2, proprecss, path_to_data, path_to_images,input_param)
+
+    print(score)
+    # 循环继续，等待下一个输入参数
+    # pred(path_to_data, path_to_images,image_filenames)
         
     
