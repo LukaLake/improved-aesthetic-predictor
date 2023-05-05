@@ -73,6 +73,9 @@ class MLP(pl.LightningModule):
 
 
 def normalized(a, axis=-1, order=2):
+    """axis=-1 表示默认计算 a 数组的最后一个轴上的范数（即行向量的L2范数，也可以理解为每个样本的范数），
+    order=2 表示计算L2范数。因此，对于二维数组，函数将对每一行进行L2归一化。
+    """
     import numpy as np  # pylint: disable=import-outside-toplevel
 
     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
