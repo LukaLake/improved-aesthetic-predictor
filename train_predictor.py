@@ -64,7 +64,7 @@ class MLP(pl.LightningModule):
 
 x = np.load ("./ava_x_openai_clip_L14.npy")
 
-y = np.load ("./ava_x_openai_clip_L14.npy")
+y = np.load ("./ava_y_openai_clip_L14.npy")
 
 val_percentage = 0.05 # 5% of the trainingdata will be used for validation
 
