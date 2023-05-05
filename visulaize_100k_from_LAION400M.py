@@ -14,6 +14,7 @@ import torch
 import pytorch_lightning as pl
 import torch.nn as nn
 from torchvision import datasets, transforms
+import torch.nn.functional as F
 import tqdm
 
 from os.path import join
